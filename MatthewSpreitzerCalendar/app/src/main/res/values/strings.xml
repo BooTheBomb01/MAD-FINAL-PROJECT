@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Calendar</string>
+    <string name="menu_delete">Delete</string>
+    <string name="sign_out">Sign out</string>
+    <string name="Title">title</string>
+    <string name="body">body</string>
+    <string name="menu_add">add</string>
+</resources>

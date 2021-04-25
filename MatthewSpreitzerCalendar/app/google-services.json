@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "194104440090",
+    "firebase_url": "https://demo2021-59d9f-default-rtdb.firebaseio.com",
+    "project_id": "demo2021-59d9f",
+    "storage_bucket": "demo2021-59d9f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194104440090:android:075d8a7e649d0455d468a3",
+        "android_client_info": {
+          "package_name": "edu.lewisu.cs.example.courserating"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJfFUGHpuQJLIE1symxip2KIFGopIpXz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194104440090:android:ac37045283397e96d468a3",
+        "android_client_info": {
+          "package_name": "edu.lewisu.cs.example.todofirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJfFUGHpuQJLIE1symxip2KIFGopIpXz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194104440090:android:2b224018cb1748a6d468a3",
+        "android_client_info": {
+          "package_name": "edu.lewisu.cs.spreitzermatt.gameratingfirebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJfFUGHpuQJLIE1symxip2KIFGopIpXz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194104440090:android:af7f8787862c9bdbd468a3",
+        "android_client_info": {
+          "package_name": "edu.lewisu.cs.spreitzermatt.matthewspreitzercalendar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJfFUGHpuQJLIE1symxip2KIFGopIpXz8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194104440090-jdlq1m4j8rs9n25kegjgbin32brcoeci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
