@@ -1,6 +1,7 @@
 package edu.lewisu.cs.spreitzermatt.matthewspreitzercalendar;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +14,9 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 public class CalendarAdapter extends FirebaseRecyclerAdapter<Calendar, CalendarAdapter.CalendarHolder> {
+    private static final String TAG = "CalendarAdapter";
     private final CalendarAdapterOnClickHandler clickHandler;
-
+    MainActivity mainActivity = new MainActivity();
 
     public interface CalendarAdapterOnClickHandler {
         void onClick(int position);
@@ -27,7 +29,12 @@ public class CalendarAdapter extends FirebaseRecyclerAdapter<Calendar, CalendarA
 
     @Override
     protected void onBindViewHolder(@NonNull CalendarHolder holder, int position, @NonNull Calendar model) {
-        holder.titleTextView.setText(model.getTitle());
+        Log.d(TAG, model.getDate() + " " + mainActivity.calendarDay);
+       //holder.titleTextView.setText(model.getTitle());
+        if(model.getDate().equals(mainActivity.calendarDay) == true){
+            holder.titleTextView.setText(model.getTitle());
+            //holder.titleTextView.setText(model.getTitle());
+        }
     }
 
 

@@ -69,7 +69,6 @@ public class DetailActivity extends AppCompatActivity {
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             ref = getIntent().getStringExtra("ref");
 
-
             int day = calendarView.getFirstDayOfWeek();
             Log.d(TAG, String.valueOf(day));
 
@@ -83,36 +82,27 @@ public class DetailActivity extends AppCompatActivity {
                     calendarDay = year + "/" + month + "/" + dayOfMonth;
                     calendar.setDate(calendarDay);
                     Toast.makeText(DetailActivity.this, calendarDay, Toast.LENGTH_SHORT).show();
-
                 }
-
             });
 
             if (ref != null) {
                 mDatabaseReference = mFirebaseDatabase.getReference().child("cal_item").child(ref);
-
                 ValueEventListener toDoListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         calendar = snapshot.getValue(Calendar.class);
                         setUi();
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
                     }
                 };
-
                 mDatabaseReference.addValueEventListener(toDoListener);
-
             } else {
                 addEditButton.setOnClickListener(new OnAddButtonClick());
                 mFirebaseDatabase = mFirebaseDatabase.getInstance();
                 mDatabaseReference = mFirebaseDatabase.getReference("cal_item");
             }
-
-
         }
 
         @RequiresApi(api = Build.VERSION_CODES.O)
@@ -137,7 +127,6 @@ public class DetailActivity extends AppCompatActivity {
 private class TitleListener implements TextWatcher {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
     }
 
     @Override
@@ -147,33 +136,25 @@ private class TitleListener implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-
     }
 }
 
 private class BodyListener implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
-
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             calendar.setBody(s.toString());
         }
-
         @Override
         public void afterTextChanged(Editable s) {
-
         }
     }
-
-
 
 private class OnAddButtonClick implements View.OnClickListener{
     @Override
     public void onClick(View v){
-
         mDatabaseReference.push().setValue(calendar);
         finish();
     }
@@ -184,7 +165,6 @@ private class OnUpdateButtonClick implements View.OnClickListener{
    public void onClick(View v) {
        mDatabaseReference.setValue(calendar);
         finish();
-
    }
 }
 
