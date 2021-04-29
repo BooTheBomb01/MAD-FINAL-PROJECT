@@ -32,8 +32,8 @@ import java.time.LocalDate;
 
 public class DetailActivity extends AppCompatActivity {
 
-    private static final String TAG = "DetailActivity";
-    private Calendar calendar;
+        private static final String TAG = "DetailActivity";
+        private Calendar calendar;
 
         private EditText titleField;
         private EditText bodyField;
@@ -42,7 +42,7 @@ public class DetailActivity extends AppCompatActivity {
         private String ref;
         private FirebaseDatabase mFirebaseDatabase;
         private DatabaseReference mDatabaseReference;
-        String calendarDay;
+        String Day;
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)//for (LocalDate.now)
@@ -51,7 +51,7 @@ public class DetailActivity extends AppCompatActivity {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_detail);
 
-            final CalendarView calendarView = findViewById(R.id.cal);
+            CalendarView calendarView = findViewById(R.id.cal);
             calendarView.setClickable(true);
 
             titleField = findViewById(R.id.title_field);
@@ -64,30 +64,35 @@ public class DetailActivity extends AppCompatActivity {
 
             userId = getIntent().getStringExtra("uid");
 
-            calendar = new Calendar(userId);
+
 
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             ref = getIntent().getStringExtra("ref");
 
-            int day = calendarView.getFirstDayOfWeek();
-            Log.d(TAG, String.valueOf(day));
 
+            calendar = new Calendar();
             calendar.setBody("n/a");
             calendar.setTitle("n/a");
-            calendar.setDate(String.valueOf(LocalDate.now()).replace('-', '/'));
+            Day = String.valueOf(LocalDate.now()).replace('-', '/');
+            Log.d(TAG, String.valueOf(Day.charAt(5)));
+            if (String.valueOf(Day.charAt(5)).equals("0")){
+                StringBuilder str = new StringBuilder(Day);
+                str.setCharAt(5, ' ');
+                String s = String.valueOf(str);
+                Day = s.replaceAll("\\s+","");
+            }
             calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                 @Override
                 public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                    month = month +1;
-                    calendarDay = year + "/" + month + "/" + dayOfMonth;
-                    calendar.setDate(calendarDay);
-                    Toast.makeText(DetailActivity.this, calendarDay, Toast.LENGTH_SHORT).show();
+                    month = month + 1;
+                    Day = year + "/" + month + "/" + dayOfMonth;
+                    Log.d(TAG, Day);
                 }
             });
 
             if (ref != null) {
                 mDatabaseReference = mFirebaseDatabase.getReference().child("cal_item").child(ref);
-                ValueEventListener toDoListener = new ValueEventListener() {
+                ValueEventListener calListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         calendar = snapshot.getValue(Calendar.class);
@@ -97,8 +102,9 @@ public class DetailActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError error) {
                     }
                 };
-                mDatabaseReference.addValueEventListener(toDoListener);
+                mDatabaseReference.addValueEventListener(calListener);
             } else {
+
                 addEditButton.setOnClickListener(new OnAddButtonClick());
                 mFirebaseDatabase = mFirebaseDatabase.getInstance();
                 mDatabaseReference = mFirebaseDatabase.getReference("cal_item");
@@ -155,6 +161,14 @@ private class BodyListener implements TextWatcher {
 private class OnAddButtonClick implements View.OnClickListener{
     @Override
     public void onClick(View v){
+
+
+
+        String userIdDay = userId + "_"+ Day;
+
+        calendar.setUid(userIdDay);
+
+        Log.d(TAG, String.valueOf(calendar));
         mDatabaseReference.push().setValue(calendar);
         finish();
     }
@@ -171,7 +185,7 @@ private class OnUpdateButtonClick implements View.OnClickListener{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.delete_menu,menu);
+        //getMenuInflater().inflate(R.menu.delete_menu,menu);
         //getMenuInflater().inflate(R.menu.add_menu,menu);
         return true;
     }

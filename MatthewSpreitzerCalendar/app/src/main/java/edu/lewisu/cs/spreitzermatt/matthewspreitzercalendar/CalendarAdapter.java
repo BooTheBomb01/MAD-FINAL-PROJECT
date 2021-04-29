@@ -29,12 +29,9 @@ public class CalendarAdapter extends FirebaseRecyclerAdapter<Calendar, CalendarA
 
     @Override
     protected void onBindViewHolder(@NonNull CalendarHolder holder, int position, @NonNull Calendar model) {
-        Log.d(TAG, model.getDate() + " " + mainActivity.calendarDay);
-       //holder.titleTextView.setText(model.getTitle());
-        if(model.getDate().equals(mainActivity.calendarDay) == true){
-            holder.titleTextView.setText(model.getTitle());
-            //holder.titleTextView.setText(model.getTitle());
-        }
+
+        holder.titleTextView.setText(model.getTitle());
+
     }
 
 

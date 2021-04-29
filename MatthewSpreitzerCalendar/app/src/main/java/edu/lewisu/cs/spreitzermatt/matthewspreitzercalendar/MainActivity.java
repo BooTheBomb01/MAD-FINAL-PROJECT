@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     private static final String TAG = "MainActivity";
 
 
- public static String calendarDay;
+    private String calendarDay;
 
 
     private CalendarAdapter adapter;
@@ -126,12 +126,9 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
                 calendarDay = year + "/" + month + "/" + dayOfMonth;
 
 
-                Toast.makeText(MainActivity.this, calendarDay, Toast.LENGTH_SHORT).show();
-                setAdapter();
             }
-
         });
-        setAdapter();
+
     }
 
     @Override
@@ -142,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
         String id = ref.getKey();
         detailIntent.putExtra("ref", id);
         startActivity(detailIntent);
+        setAdapter();
     }
     @Override
     public void onResume() {
@@ -194,7 +192,8 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
 
     private void setAdapter(){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        Query query = firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId);
+        Query query = firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay);
+
         FirebaseRecyclerOptions<Calendar> options =
                 new FirebaseRecyclerOptions.Builder<Calendar> ()
                         .setQuery(query, Calendar.class)

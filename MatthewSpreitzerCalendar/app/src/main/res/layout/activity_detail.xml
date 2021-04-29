@@ -11,8 +11,7 @@
         android:id="@+id/cal"
         android:layout_gravity="center_horizontal"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        ></CalendarView>
+        android:layout_width="wrap_content" />
 
     <EditText
         android:layout_width="match_parent"
