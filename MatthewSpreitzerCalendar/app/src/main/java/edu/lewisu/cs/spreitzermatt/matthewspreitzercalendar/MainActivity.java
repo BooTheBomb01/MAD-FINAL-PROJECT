@@ -120,15 +120,13 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                setAdapter();
                 month = month +1;
-                adapter.notifyDataSetChanged();
                 calendarDay = year + "/" + month + "/" + dayOfMonth;
-
+                Log.d(TAG, calendarDay);
 
             }
         });
-
+ 
     }
 
     @Override
@@ -139,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
         String id = ref.getKey();
         detailIntent.putExtra("ref", id);
         startActivity(detailIntent);
-        setAdapter();
+
     }
     @Override
     public void onResume() {
@@ -158,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
+        getMenuInflater().inflate(R.menu.refreshevents, menu);
         return true;
     }
 
@@ -167,7 +166,10 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
         if (item.getItemId() == R.id.sign_out){
             AuthUI.getInstance().signOut(this);
             return true;
-        }else{
+        }else if (item.getItemId() == R.id.refresh){
+            setAdapter();
+            return true;
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -193,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     private void setAdapter(){
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         Query query = firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay);
-
+        Log.d(TAG, mUserId + "_" + calendarDay);
         FirebaseRecyclerOptions<Calendar> options =
                 new FirebaseRecyclerOptions.Builder<Calendar> ()
                         .setQuery(query, Calendar.class)
