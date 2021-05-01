@@ -123,10 +123,21 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
                 month = month +1;
                 calendarDay = year + "/" + month + "/" + dayOfMonth;
                 Log.d(TAG, calendarDay);
+                updateQuery();
 
             }
+            private void updateQuery(){
+                FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                Query query = firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay);
+                Log.d(TAG, mUserId + "_" + calendarDay);
+                FirebaseRecyclerOptions<Calendar> newOptions =
+                        new FirebaseRecyclerOptions.Builder<Calendar> ()
+                                .setQuery(query, Calendar.class)
+                                .build();
+                adapter.updateOptions(newOptions);
+            }
         });
- 
+
     }
 
     @Override
@@ -166,9 +177,9 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
         if (item.getItemId() == R.id.sign_out){
             AuthUI.getInstance().signOut(this);
             return true;
-        }else if (item.getItemId() == R.id.refresh){
-            setAdapter();
-            return true;
+        //}else if (item.getItemId() == R.id.refresh){
+           // setAdapter();
+           // return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
