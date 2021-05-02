@@ -6,13 +6,14 @@ public class Calendar {
     private String date;
     private String title;
     private String body;
+    private String time;
 
-
-    public Calendar(String uid, String date, String title, String body) {
+    public Calendar(String uid, String date, String title, String body, String time) {
         this.uid = uid;
         this.date = date;
         this.title = title;
         this.body = body;
+        this.time = time;
     }
 
     public Calendar(String uid) {
@@ -20,6 +21,14 @@ public class Calendar {
     }
 
     public Calendar() {
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getDate() {

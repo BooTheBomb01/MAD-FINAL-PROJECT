@@ -18,6 +18,7 @@ import android.widget.CalendarView;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -43,7 +44,8 @@ public class DetailActivity extends AppCompatActivity {
         private FirebaseDatabase mFirebaseDatabase;
         private DatabaseReference mDatabaseReference;
         String Day;
-
+        int hour;
+        int minute;
 
     @RequiresApi(api = Build.VERSION_CODES.O)//for (LocalDate.now)
     @Override
@@ -64,11 +66,11 @@ public class DetailActivity extends AppCompatActivity {
 
             userId = getIntent().getStringExtra("uid");
 
-
+            TimePicker timePicker = (TimePicker)findViewById(R.id.TimePicker);
+            timePicker.setIs24HourView(false);
 
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             ref = getIntent().getStringExtra("ref");
-
 
             calendar = new Calendar();
             calendar.setBody("n/a");
@@ -81,6 +83,7 @@ public class DetailActivity extends AppCompatActivity {
                 String s = String.valueOf(str);
                 Day = s.replaceAll("\\s+","");
             }
+
             calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                 @Override
                 public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
@@ -89,7 +92,13 @@ public class DetailActivity extends AppCompatActivity {
                     Log.d(TAG, Day);
                 }
             });
-
+            timePicker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                @Override
+                public void onTimeChanged(TimePicker timePicker, int hours, int minutes) {
+                    hour = hours;
+                    minute = minutes;
+                }
+            });
             if (ref != null) {
                 mDatabaseReference = mFirebaseDatabase.getReference().child("cal_item").child(ref);
                 ValueEventListener calListener = new ValueEventListener() {
@@ -162,10 +171,8 @@ private class OnAddButtonClick implements View.OnClickListener{
     @Override
     public void onClick(View v){
 
-
-
         String userIdDay = userId + "_"+ Day;
-
+        calendar.setTime(hour + "_" + minute);
         calendar.setUid(userIdDay);
 
         Log.d(TAG, String.valueOf(calendar));

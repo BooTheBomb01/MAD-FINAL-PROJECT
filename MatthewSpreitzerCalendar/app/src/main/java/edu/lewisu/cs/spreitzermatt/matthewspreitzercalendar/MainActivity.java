@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
-        getMenuInflater().inflate(R.menu.refreshevents, menu);
+        //getMenuInflater().inflate(R.menu.refreshevents, menu);
         return true;
     }
 

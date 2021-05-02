@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:textSize="20sp"
         android:hint="@string/Title"
-        android:layout_marginTop="20dp"
         android:id="@+id/title_field"/>
 
 
@@ -31,17 +30,21 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="12sp"
         android:hint="@string/body"
-        android:layout_marginTop="20dp"
         android:id="@+id/body_field"/>
-   <Button
-       android:id="@+id/add_edit_button"
+
+    <TimePicker
+        android:id="@+id/TimePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-       android:layout_margin="50dp"
+        android:timePickerMode="spinner" />
 
+    <Button
+        android:id="@+id/add_edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
         android:text="add" />
 
 
