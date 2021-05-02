@@ -167,6 +167,8 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
+        getMenuInflater().inflate(R.menu.settings_menu, menu);
+
         //getMenuInflater().inflate(R.menu.refreshevents, menu);
         return true;
     }
@@ -174,12 +176,16 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (item.getItemId() == R.id.sign_out){
+        if (item.getItemId() == R.id.sign_out) {
             AuthUI.getInstance().signOut(this);
             return true;
-        //}else if (item.getItemId() == R.id.refresh){
-           // setAdapter();
-           // return true;
+            //}else if (item.getItemId() == R.id.refresh){
+            // setAdapter();
+            // return true;
+        } else if (item.getItemId() == R.id.settings) {
+            Intent optionsActivity = new Intent(this, OptionsActivity.class);
+            startActivity(optionsActivity);
+            return true;
         } else {
             return super.onOptionsItemSelected(item);
         }
