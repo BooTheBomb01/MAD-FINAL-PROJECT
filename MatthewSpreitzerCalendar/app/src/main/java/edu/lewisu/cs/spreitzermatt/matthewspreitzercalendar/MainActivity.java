@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Build;
@@ -27,10 +29,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +44,11 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements CalendarAdapter.CalendarAdapterOnClickHandler {
     private final static int RC_SIGN_IN = 1;
@@ -74,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
 
         CalendarView calendarView = findViewById(R.id.Calendar);
         calendarView.setClickable(true);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,15 +98,13 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
         setAdapter();
 
 
-
-
         FirebaseApp.initializeApp(this);
         mFirebaseAuth = FirebaseAuth.getInstance();
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                if(user !=null){
+                if (user != null) {
                     mUserId = user.getUid();
                 } else {
                     startActivityForResult(
@@ -107,34 +116,113 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
             }
         };
 
+
         calendarDay = String.valueOf(LocalDate.now()).replace('-', '/');
         Log.d(TAG, String.valueOf(calendarDay.charAt(5)));
-        if (String.valueOf(calendarDay.charAt(5)).equals("0")){
+        if (String.valueOf(calendarDay.charAt(5)).equals("0")) {
             StringBuilder str = new StringBuilder(calendarDay);
             str.setCharAt(5, ' ');
             String s = String.valueOf(str);
-            calendarDay = s.replaceAll("\\s+","");
+            calendarDay = s.replaceAll("\\s+", "");
         }
 
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
-                month = month +1;
+                month = month + 1;
                 calendarDay = year + "/" + month + "/" + dayOfMonth;
                 Log.d(TAG, calendarDay);
                 updateQuery();
 
             }
-            private void updateQuery(){
+
+            private void updateQuery() {
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                 Query query = firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay);
                 Log.d(TAG, mUserId + "_" + calendarDay);
                 FirebaseRecyclerOptions<Calendar> newOptions =
-                        new FirebaseRecyclerOptions.Builder<Calendar> ()
+                        new FirebaseRecyclerOptions.Builder<Calendar>()
                                 .setQuery(query, Calendar.class)
                                 .build();
                 adapter.updateOptions(newOptions);
+            }
+        });
+
+
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                String GetCurDay;
+                while (true) {
+                    GetCurDay = String.valueOf(LocalDate.now()).replace('-', '/');
+                    Log.d(TAG, String.valueOf(GetCurDay.charAt(5)));
+                    if (String.valueOf(GetCurDay.charAt(5)).equals("0")) {
+                        StringBuilder str = new StringBuilder(GetCurDay);
+                        str.setCharAt(5, ' ');
+                        String s = String.valueOf(str);
+                        GetCurDay = s.replaceAll("\\s+", "");
+                    }
+                    if (String.valueOf(GetCurDay.charAt(7)).equals("0")){
+                        StringBuilder str = new StringBuilder(GetCurDay);
+                        str.setCharAt(7, ' ');
+                        String s = String.valueOf(str);
+                        GetCurDay = s.replaceAll("\\s+","");
+                    }
+                    //System.out.println(new Date());
+                    System.out.println(GetCurDay);
+                    FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+                    //.child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay);
+                    Query database = firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + GetCurDay);
+                    database.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.getValue() != null) {
+                            Log.d(TAG, String.valueOf(dataSnapshot.getValue()));
+                            Log.d(TAG, String.valueOf(dataSnapshot.child("-MZmD5OwvbIsmO5754U9").getValue()));//.child("-MZjiaPNnrpD8jCjUyRT")
+                        }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            // ...
+                        }
+                    });
+//                    firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay).get()
+//                            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+//                            if (!task.isSuccessful()) {
+//                                Log.e("firebase", "Error getting data", task.getException());
+//                            }
+//                            else {
+//                                Log.d("firebase", String.valueOf(task.getResult().getValue()));
+//                            }
+//                        }
+//                    });
+            //        Intent showNotification = new Intent(this, NotificationAlertReceiver.class);
+            //        showNotification.setAction(NotificationAlertReceiver.ACTION_REVIEW_REMINDER);
+            //        PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(
+            //                this,
+            //                0,
+            //                showNotification,
+            //                PendingIntent.FLAG_UPDATE_CURRENT
+            //        );
+            //
+            //        AlarmManager am = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+            //        am.setRepeating(AlarmManager.RTC_WAKEUP,
+            //                System.currentTimeMillis()+5000, 60000, notifyPendingIntent);
+
+                    try {
+                        Thread.sleep(1 * 1000);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -177,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.sign_out) {
+
             AuthUI.getInstance().signOut(this);
             return true;
             //}else if (item.getItemId() == R.id.refresh){
@@ -221,4 +310,5 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
         recyclerView.setAdapter(adapter);
 
     }
+
 }
