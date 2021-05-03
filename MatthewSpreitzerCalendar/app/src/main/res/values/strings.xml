@@ -12,7 +12,7 @@
     <string name="timeFormat24">24</string>
     <!-- Notification Strings -->
     <string name="notify">Notify</string>
-    <string name="reminder_title">What will you accomplish today?</string>
+    <string name="reminder_title">You have a new event in your calendar</string>
     <string name="reminder_text">Check ToDo App for the things that you need to do today.  Make it
     a productive day!</string>
     <string name="channel_name">Primary</string>

@@ -48,6 +48,8 @@ public class DetailActivity extends AppCompatActivity {
         int hour;
         int minute;
         boolean is24Hour;
+        String findBadCharacterBody;
+        String findBadCharacterTitle;
     @RequiresApi(api = Build.VERSION_CODES.O)//for (LocalDate.now)
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +115,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 public void onTimeChanged(TimePicker timePicker, int hours, int minutes) {
                     hour = hours;
+
                     minute = minutes;
                 }
             });
@@ -148,7 +151,7 @@ public class DetailActivity extends AppCompatActivity {
                     calendarView.setDate(new SimpleDateFormat("yyyy/MM/dd").parse(selectedDate).getTime(), true, true);
                     String times = calendar.getTime();
                     Log.d(TAG, times);
-                    String[] time = times.split("_");
+                    String[] time = times.split(":");
                     timePicker.setHour(Integer.parseInt(time[0]));
                     timePicker.setMinute(Integer.parseInt(time[1]));
                     titleField.setText(calendar.getTitle());
@@ -168,7 +171,10 @@ private class TitleListener implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-        calendar.setTitle(s.toString());
+        findBadCharacterTitle = s.toString();
+        findBadCharacterTitle = findBadCharacterTitle.replaceAll("-","");
+        findBadCharacterTitle = findBadCharacterTitle.replaceAll("=","");
+        calendar.setTitle(findBadCharacterTitle);
     }
 
     @Override
@@ -182,7 +188,10 @@ private class BodyListener implements TextWatcher {
         }
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            calendar.setBody(s.toString());
+            findBadCharacterBody = s.toString();
+            findBadCharacterBody = findBadCharacterBody.replaceAll("-","");
+            findBadCharacterBody = findBadCharacterBody.replaceAll("=","");
+            calendar.setBody(findBadCharacterBody);
         }
         @Override
         public void afterTextChanged(Editable s) {
@@ -227,7 +236,15 @@ private class OnUpdateButtonClick implements View.OnClickListener{
         }else if (item.getItemId() == R.id.add){
 
             String userIdDay = userId + "_"+ Day;
-            calendar.setTime(hour + "_" + minute);
+            String theHour = String.valueOf(hour);
+            String theMin = String.valueOf(minute);
+            if(theHour.length() == 1){
+                theHour = "0" + theHour;
+            }
+            if(theMin.length() == 1){
+                theMin = "0" + theMin;
+            }
+            calendar.setTime(theHour + ":" + theMin);
             calendar.setUid(userIdDay);
             Log.d(TAG, String.valueOf(calendar));
             mDatabaseReference.push().setValue(calendar);

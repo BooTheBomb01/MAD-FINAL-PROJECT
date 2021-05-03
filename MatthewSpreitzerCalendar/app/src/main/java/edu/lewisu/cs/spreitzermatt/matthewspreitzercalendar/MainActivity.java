@@ -148,13 +148,22 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
                 adapter.updateOptions(newOptions);
             }
         });
+        /*
+        This is how I am getting ready to send notifications I will have this run every minute and
+        then look through the users information and see if there is a match in their time and day
+        to the machines  current time. That part works I am currently stuck on how to not have to
+        hardcode the events reference like in dataSnapshot.child("-MZmD5OwvbIsmO5754U9").getValue()))
 
+        This uses executor to make a new thread that only runs this
 
-
+        It does Log.D and prints the right stuff to the console i just need to compare the time and the
+        (mUserId + "_" + GetCurDay) to find the matching days
+         */
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 String GetCurDay;
+
                 while (true) {
                     GetCurDay = String.valueOf(LocalDate.now()).replace('-', '/');
                     Log.d(TAG, String.valueOf(GetCurDay.charAt(5)));
@@ -170,25 +179,45 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
                         String s = String.valueOf(str);
                         GetCurDay = s.replaceAll("\\s+","");
                     }
-                    //System.out.println(new Date());
+
                     System.out.println(GetCurDay);
                     FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
                     //.child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay);
                     Query database = firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + GetCurDay);
                     database.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
                         if(dataSnapshot.getValue() != null) {
-                            Log.d(TAG, String.valueOf(dataSnapshot.getValue()));
-                            Log.d(TAG, String.valueOf(dataSnapshot.child("-MZmD5OwvbIsmO5754U9").getValue()));//.child("-MZjiaPNnrpD8jCjUyRT")
-                        }
-                        }
+                            int i = 0;
+                            String[] GetCurTime;
+                            String curTime;
+                            String timeInData;
+                            GetCurTime = String.valueOf(new Date()).split(" ");
+                            curTime = GetCurTime[3];
+                            curTime = curTime.substring(0, 5);
+                            String reference;
+                            //Log.d(TAG, String.valueOf(dataSnapshot.getValue()));
+                            String QueryData = String.valueOf(dataSnapshot.getValue());
+                            QueryData = QueryData.replaceAll("\\{","");
+                            String[] queryData = QueryData.split("=| ");
+                            for (String s: queryData) {
+                                if(i % 9 == 0){
+                                    reference = String.valueOf(queryData[i]);
+                                    //curTime = "09:54";
+                                    timeInData = String.valueOf(dataSnapshot.child(reference).child("time").getValue());
+                                    if(timeInData.equals(curTime)){
+                                        Log.d("MAtch",timeInData);
+                                        NotificationUtils.remindUser(getBaseContext());
+                                    }
+                                }
+                                i = i + 1;
+                            }
 
+                        }
+                        }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
-                            // ...
+
                         }
                     });
 //                    firebaseDatabase.getReference().child("cal_item").orderByChild("uid").equalTo(mUserId + "_" + calendarDay).get()
@@ -203,21 +232,10 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
 //                            }
 //                        }
 //                    });
-            //        Intent showNotification = new Intent(this, NotificationAlertReceiver.class);
-            //        showNotification.setAction(NotificationAlertReceiver.ACTION_REVIEW_REMINDER);
-            //        PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(
-            //                this,
-            //                0,
-            //                showNotification,
-            //                PendingIntent.FLAG_UPDATE_CURRENT
-            //        );
-            //
-            //        AlarmManager am = (AlarmManager) this.getSystemService(ALARM_SERVICE);
-            //        am.setRepeating(AlarmManager.RTC_WAKEUP,
-            //                System.currentTimeMillis()+5000, 60000, notifyPendingIntent);
+
 
                     try {
-                        Thread.sleep(1 * 1000);
+                        Thread.sleep(1 * 100000);
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -225,7 +243,18 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
                 }
             }
         });
+        Intent showNotification = new Intent(this, NotificationAlertReceiver.class);
+        showNotification.setAction(NotificationAlertReceiver.ACTION_REVIEW_REMINDER);
+        PendingIntent notifyPendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                showNotification,
+                PendingIntent.FLAG_UPDATE_CURRENT
+        );
 
+        AlarmManager am = (AlarmManager) this.getSystemService(ALARM_SERVICE);
+        am.setRepeating(AlarmManager.RTC_WAKEUP,
+                System.currentTimeMillis()+5000, 60000, notifyPendingIntent);
     }
 
     @Override
@@ -265,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements CalendarAdapter.C
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.sign_out) {
-
+            //NotificationUtils.remindUser(this);
             AuthUI.getInstance().signOut(this);
             return true;
             //}else if (item.getItemId() == R.id.refresh){
